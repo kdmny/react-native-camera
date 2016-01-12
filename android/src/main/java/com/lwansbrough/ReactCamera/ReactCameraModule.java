@@ -47,7 +47,7 @@ public class ReactCameraModule extends ReactContextBaseJavaModule {
     @ReactMethod
     public void capture(ReadableMap options, final Callback callback) {
         Camera camera = cameraInstanceManager.getCamera(options.getString("type"));
-        camera.takePicture(null, null, new PictureTakenCallback(options, callback, reactContext));
+        camera.takePicture(null, null, null, new PictureTakenCallback(options, callback, reactContext));
     }
 
     private class PictureTakenCallback implements Camera.PictureCallback {
@@ -70,24 +70,25 @@ public class ReactCameraModule extends ReactContextBaseJavaModule {
 
         @Override
         public void onPictureTaken(byte[] data, Camera camera) {
-            camera.startPreview();
+            // camera.startPreview();
 
-            int cameraOrientation = cameraInstanceManager.getCameraOrientation(camera);
+            // int cameraOrientation = cameraInstanceManager.getCameraOrientation(camera);
 
-            BitmapFactory.Options bitmapOptions = new BitmapFactory.Options();
-            bitmapOptions.inSampleSize = options.getInt("sampleSize");
-            Bitmap bitmap = RotateBitmap(BitmapFactory.decodeByteArray(data, 0, data.length, bitmapOptions), -90);
+            // BitmapFactory.Options bitmapOptions = new BitmapFactory.Options();
+            // bitmapOptions.inSampleSize = 1;
+            // Bitmap bitmap = BitmapFactory.decodeByteArray(data, 0, data.length, bitmapOptions);
 
             switch(options.getString("target")) {
                 case "base64":
-                    ByteArrayOutputStream stream = new ByteArrayOutputStream();
-                    bitmap.compress(Bitmap.CompressFormat.JPEG, 100, stream);
-                    byte[] byteArray = stream.toByteArray();
-                    String encoded = Base64.encodeToString(byteArray, Base64.DEFAULT);
+                    // ByteArrayOutputStream stream = new ByteArrayOutputStream();
+                    // stream.write(data);
+                    // bitmap.compress(Bitmap.CompressFormat.JPEG, 100, stream);
+                    // byte[] byteArray = stream.toByteArray();
+                    String encoded = Base64.encodeToString(data, Base64.DEFAULT);
                     callback.invoke(encoded);
                 break;
                 case "gallery":
-                    Media.insertImage(reactContext.getContentResolver(), bitmap, options.getString("title"), options.getString("description"));
+                    // Media.insertImage(reactContext.getContentResolver(), bitmap, options.getString("title"), options.getString("description"));
                     callback.invoke();
                 break;
                 case "file":

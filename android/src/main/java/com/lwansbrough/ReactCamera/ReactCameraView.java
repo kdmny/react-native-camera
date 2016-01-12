@@ -41,11 +41,33 @@ class ReactCameraView extends SurfaceView implements SurfaceHolder.Callback {
         return;
     }
 
+
+    private Camera.Size getBestPictureSize(Camera.Parameters parameters) {
+        Camera.Size result=null;
+        for (Camera.Size size : parameters.getSupportedPictureSizes()) {
+            if (result==null) {
+                result=size;
+            }
+            int resultArea=result.width*result.height;
+            int newArea=size.width*size.height;
+
+            if (newArea>resultArea && newArea < 500000) {
+                result=size;
+            }
+        }
+        return(result);
+    }
+
     public void surfaceCreated(SurfaceHolder holder) {
         Log.v("ReactCameraView", "surfaceCreated");
         if (camera != null) {
             try {
+                Camera.Parameters parameters = camera.getParameters();
+                parameters.setFocusMode("continuous-picture");
+                Camera.Size size = this.getBestPictureSize(parameters);
+                parameters.setPictureSize(size.width, size.height);
                 camera.setPreviewDisplay(getHolder());
+                camera.setParameters(parameters);
                 cameraInstanceManager.updateCameraOrientation(camera);
                 camera.startPreview();
             } catch (Exception e) {

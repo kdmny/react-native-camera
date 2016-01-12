@@ -45,7 +45,10 @@ class ReactCameraView extends SurfaceView implements SurfaceHolder.Callback {
         Log.v("ReactCameraView", "surfaceCreated");
         if (camera != null) {
             try {
+                Camera.Parameters parameters = camera.getParameters();
+                parameters.setPictureSize(640, 480);
                 camera.setPreviewDisplay(getHolder());
+                camera.setParameters(parameters);
                 cameraInstanceManager.updateCameraOrientation(camera);
                 camera.startPreview();
             } catch (Exception e) {

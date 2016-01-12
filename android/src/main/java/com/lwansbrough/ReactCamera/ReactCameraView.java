@@ -42,7 +42,7 @@ class ReactCameraView extends SurfaceView implements SurfaceHolder.Callback {
     }
 
 
-    private Camera.Size getBestPictureSize(Camera.Parameters parameters) {
+    private Camera.Size getReasonablePictureSize(Camera.Parameters parameters) {
         Camera.Size result=null;
         for (Camera.Size size : parameters.getSupportedPictureSizes()) {
             if (result==null) {
@@ -51,7 +51,7 @@ class ReactCameraView extends SurfaceView implements SurfaceHolder.Callback {
             int resultArea=result.width*result.height;
             int newArea=size.width*size.height;
 
-            if (newArea>resultArea && newArea < 500000) {
+            if (newArea > 200000) {
                 result=size;
             }
         }
@@ -64,7 +64,7 @@ class ReactCameraView extends SurfaceView implements SurfaceHolder.Callback {
             try {
                 Camera.Parameters parameters = camera.getParameters();
                 parameters.setFocusMode("continuous-picture");
-                Camera.Size size = this.getBestPictureSize(parameters);
+                Camera.Size size = this.getReasonablePictureSize(parameters);
                 parameters.setPictureSize(size.width, size.height);
                 camera.setPreviewDisplay(getHolder());
                 camera.setParameters(parameters);
